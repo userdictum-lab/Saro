@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+body{
+background:linear-gradient(135deg,#201828,#2a1d33,#3a223a);
+color:white;
+height:100vh;
+overflow:hidden;
+transition:1s;
+}
+
+/* اسمها العائم */
+#herName{
+position:fixed;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+font-size:32px;
+font-weight:bold;
+letter-spacing:4px;
+z-index:9999;
+pointer-events:none;
+background:linear-gradient(90deg,#fff,#ffd6f1,#fff);
+-webkit-background-clip:text;
+color:transparent;
+animation:shine 3s linear infinite, glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes shine{
+0%{background-position:-200px;}
+100%{background-position:200px;}
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px #ff9ed2;}
+to{text-shadow:0 0 25px #ffffff;}
+}
+
+.screen{display:none;height:100vh;justify-content:center;align-items:center;padding:20px;opacity:0;transition:.6s;}
+.screen.active{display:flex;opacity:1;}
+
+.card{
+background:rgba(255,255,255,0.06);
+padding:28px;
+border-radius:24px;
+text-align:center;
+backdrop-filter:blur(14px);
+width:100%;
+max-width:460px;
+box-shadow:0 0 50px rgba(255,120,180,0.15);
+}
+
+button{
+padding:11px 20px;
+border:none;
+border-radius:14px;
+background:linear-gradient(45deg,#ff7eb3,#ff4d8d);
+color:white;
+cursor:pointer;
+margin:6px;
+transition:.3s;
+}
+button:hover{transform:scale(1.08);}
+
+input{
+width:100%;
+padding:13px;
+border-radius:12px;
+border:none;
+margin:15px 0;
+background:#ffffff15;
+color:white;
+outline:none;
+}
+
+.fadeLine{opacity:0;transform:translateY(10px);animation:fadeUp 1s forwards;}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+.giftGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:20px;
+}
+
+#giftImage{
+margin-top:20px;
+max-width:100%;
+border-radius:20px;
+box-shadow:0 0 25px rgba(255,255,255,0.3);
+}
+
+.scrollable{
+max-height:60vh;
+overflow-y:auto;
+text-align:left;
+padding-right:10px;
+}
+</style>
+</head>
+<body>
+
+<!-- اسمها -->
+<div id="herName">Saro ❤️</div>
+
+<audio id="bgMusic" loop>
+<source src="Amjed.m4a">
+</audio>
+
+<audio id="voice">
+<source src="A.S.m4a">
+</audio>
+
+<!-- PASSWORD -->
+<section id="passwordScreen" class="screen active">
+<div class="card">
+<h2>This page is just for you 💖</h2>
+<input type="password" id="passwordInput" placeholder="Enter the special date">
+<button onclick="checkPassword()">Enter</button>
+<p id="errorMessage"></p>
+</div>
+</section>
+
+<!-- QUESTION -->
+<section id="questionScreen" class="screen">
+<div class="card">
+<h2>Will you be my Valentine? ❤️</h2>
+<button id="yesBtn">Yes 💖</button>
+<button id="noBtn">No 😏</button>
+<p id="noText"></p>
+<p id="firstHint">Try your luck 😂</p>
+</div>
+</section>
+
+<!-- MESSAGE -->
+<section id="messageScreen" class="screen">
+<div class="card">
+<h2>Best decision you made ever 💖</h2>
+<div id="loveMessage" class="scrollable"></div>
+<button onclick="showGifts()">Open Gifts 🎁</button>
+<button onclick="playVoice()">Play my voice 🎙</button>
+</div>
+</section>
+
+<!-- GIFTS -->
+<section id="giftsScreen" class="screen">
+<div class="card">
+<h2>Choose your gift 💝</h2>
+
+<div class="giftGrid">
+<button onclick="gift(1)">gift no.1 🌹</button>
+<button onclick="gift(2)">gift no.2 🌌</button>
+<button onclick="gift(3)">gift no.3 🪷</button>
+<button onclick="gift(4)">gift no.4 😁</button>
+</div>
+
+<img id="giftImage">
+<p id="giftText"></p>
+
+</div>
+</section>
+
+<script>
+const correctPassword="2905";
+const bgMusic=document.getElementById("bgMusic");
+const voice=document.getElementById("voice");
+
+/* screen switch */
+function switchScreen(a,b){
+document.getElementById(a).classList.remove("active");
+setTimeout(()=>document.getElementById(b).classList.add("active"),300);
+}
+
+/* password */
+function checkPassword(){
+if(passwordInput.value===correctPassword){
+switchScreen("passwordScreen","questionScreen");
+bgMusic.play();
+}else errorMessage.innerText="Wrong date 😌";
+}
+
+/* no button */
+let noCount=0;
+noBtn.onclick=()=>{
+noCount++;
+noBtn.style.position="absolute";
+noBtn.style.top=Math.random()*80+"%";
+noBtn.style.left=Math.random()*80+"%";
+let t=["Are you sure?","Think again","Still no?","Destiny says yes","Last chance"];
+firstHint.style.display="none";
+noText.innerText=t[noCount]||"You can't escape 😌";
+if(noCount>5) noBtn.style.display="none";
+};
+
+/* yes */
+yesBtn.onclick=()=>{
+switchScreen("questionScreen","messageScreen");
+showText();
+};
+
+/* long message */
+function showText(){
+const lines=`Saro… 🤍
+Valentine’s Day isn’t just a celebration.
+It’s a reminder that love can be gentle… steady… real. 🌷
+And somehow, in the middle of everything,
+I found that kind of love in you.
+When I think about you,
+I don’t think about one single moment.
+I think about how you make the world quieter for me.
+Softer. Warmer. Safer. 🕊️
+You have this calm strength…
+this beautiful patience…
+this way of caring that feels effortless. 🌸
+I’ve seen you grow.
+I’ve seen you try.
+I’ve seen you push yourself even when it wasn’t easy.
+And every time…
+I admired you more. 🤍
+If love had a melody,
+it would sound like this piano playing now. 🎹
+If love had a light,
+it would glow the way your eyes do when you smile. ✨
+If love had a name…
+it would be yours.
+This page is small compared to what I feel.
+Because what I feel is not loud.
+It’s not dramatic.
+It’s quiet.
+It’s steady.
+It stays. 💞
+And on this Valentine’s Day…
+I don’t just want a moment.
+I want to keep choosing you.
+Again and again.
+So…
+Be my Valentine ❤️`.split("\n");
+
+const box=document.getElementById("loveMessage");
+box.innerHTML="";
+
+lines.forEach((l,i)=>{
+setTimeout(()=>{
+let p=document.createElement("p");
+p.className="fadeLine";
+p.innerText=l;
+box.appendChild(p);
+box.scrollTop=box.scrollHeight;
+},500*i);
+});
+}
+
+/* voice */
+function playVoice(){
+bgMusic.volume=0.2;
+voice.play();
+voice.onended=()=>bgMusic.volume=1;
+}
+
+/* gifts */
+function showGifts(){
+switchScreen("messageScreen","giftsScreen");
+}
+
+function gift(n){
+const img=document.getElementById("giftImage");
+const text=document.getElementById("giftText");
+
+if(n===1){
+document.body.style.background="linear-gradient(135deg,#3a0000,#6b0000)";
+img.src="gift1.jpg";
+text.innerText="Roses for you 🌹";
+}
+if(n===2){
+document.body.style.background="linear-gradient(135deg,#000428,#004e92)";
+img.src="gift2.jpg";
+text.innerText="A sky full of wishes 🌌";
+}
+if(n===3){
+document.body.style.background="linear-gradient(135deg,#1a2a1a,#2e8b57)";
+img.src="gift3.jpg";
+text.innerText="Peaceful lotus 🪷";
+}
+if(n===4){
+document.body.style.background="linear-gradient(135deg,#2b1055,#7597de)";
+img.src="gift4.jpg";
+text.innerText="It's me 😁❤️";
+}
+}
+</script>
+
+</body>
+</html>}
+
+.fade{
+opacity:0;
+animation:fade 1s forwards;
+}
+@keyframes fade{to{opacity:1}}
+
+.gifts button{display:block;width:100%;margin-top:10px}
+
+img{
+max-width:100%;
+margin-top:15px;
+border-radius:20px;
+box-shadow:0 0 30px rgba(255,255,255,0.2);
+}
+
+#counter{margin-top:10px;color:#ffd166}
+</style>
+</head>
+<body>
+
+<audio id="music" loop>
+<source src="Amjed.m4a">
+</audio>
+
+<audio id="voice">
+<source src="A.S.m4a">
+</audio>
+
+<!-- password -->
+<section id="s1" class="screen active">
+<div class="card">
+<h2>This page is just for you 💖</h2>
+<input id="pass" placeholder="Enter special date">
+<button onclick="login()">Enter</button>
+<p id="err"></p>
+</div>
+</section>
+
+<!-- question -->
+<section id="s2" class="screen">
+<div class="card">
+<h2>Saro ✨</h2>
+<h2>Will you be my Valentine? ❤️</h2>
+<button id="yes">Yes 💖</button>
+<button id="no">No 😏</button>
+<p id="msg"></p>
+</div>
+</section>
+
+<!-- message -->
+<section id="s3" class="screen">
+<div class="card">
+<h2>Best decision ever 💘</h2>
+<div id="text"></div>
+<div id="counter"></div>
+<button onclick="playVoice()">Play my voice 🎙</button>
+<button onclick="goGifts()">Open Gifts 🎁</button>
+</div>
+</section>
+
+<!-- gifts -->
+<section id="s4" class="screen">
+<div class="card">
+<h2>Choose your gift 🎀</h2>
+
+<div class="gifts">
+<button onclick="gift(1)">gift no.1 🌹</button>
+<button onclick="gift(2)">gift no.2 🌌</button>
+<button onclick="gift(3)">gift no.3 🪷</button>
+<button onclick="gift(4)">gift no.4 😁</button>
+</div>
+
+<div id="giftArea"></div>
+
+</div>
+</section>
+
+<script>
+const music=document.getElementById("music");
+const voice=document.getElementById("voice");
+
+function go(a,b){
+document.getElementById(a).classList.remove("active");
+setTimeout(()=>document.getElementById(b).classList.add("active"),300);
+}
+
+/* login */
+function login(){
+if(pass.value==="2905"){
+go("s1","s2");
+music.volume=1;
+music.play();
+}else err.innerText="Wrong date 😌";
+}
+
+/* yes/no */
+let n=0;
+no.onclick=()=>{
+n++;
+no.style.position="absolute";
+no.style.top=Math.random()*80+"%";
+no.style.left=Math.random()*80+"%";
+msg.innerText=["Are you sure?","Think again","Still no?","Destiny says yes","Last chance"][n]||"You can't escape 😌";
+if(n>5) no.style.display="none";
+};
+
+yes.onclick=()=>{
+go("s2","s3");
+showText();
+countDays();
+};
+
+/* message text */
+function showText(){
+let lines=[
+"Saro 🤍",
+"You feel like peace.",
+"You feel like home.",
+"You feel like everything good.",
+"I want every moment with you 💞"
+];
+text.innerHTML="";
+lines.forEach((l,i)=>{
+setTimeout(()=>{
+let p=document.createElement("p");
+p.className="fade";
+p.innerText=l;
+text.appendChild(p);
+},600*i);
+});
+}
+
+/* days counter */
+function countDays(){
+let start=new Date("2023-05-29");
+let now=new Date();
+let d=Math.floor((now-start)/86400000);
+counter.innerText="You’ve been in my life for "+d+" days ❤️";
+}
+
+/* voice system */
+function playVoice(){
+music.volume=0.2;
+voice.play();
+voice.onended=()=> music.volume=1;
+}
+
+/* gifts screen */
+function goGifts(){go("s3","s4");}
+
+/* gifts logic */
+function gift(n){
+
+let area=document.getElementById("giftArea");
+
+if(n==1){
+document.body.style.background="linear-gradient(135deg,#3a0d1f,#6b0f1a)";
+area.innerHTML="<h3>Roses 🌹</h3><p>You deserve flowers every day.</p><img src='gift1.jpg'>";
+}
+
+if(n==2){
+document.body.style.background="linear-gradient(135deg,#020024,#090979,#000)";
+area.innerHTML="<h3>Night Sky 🌌</h3><p>A sky full of wishes for you.</p><img src='gift2.jpg'>";
+}
+
+if(n==3){
+document.body.style.background="linear-gradient(135deg,#42275a,#734b6d)";
+area.innerHTML="<h3>Lotus 🪷</h3><p>You make silence warm.</p><img src='gift3.jpg'>";
+}
+
+if(n==4){
+document.body.style.background="linear-gradient(135deg,#ff758c,#ff7eb3)";
+area.innerHTML="<h3>It's Me 😁</h3><p>Plot twist… I'm your gift ❤️</p><img src='gift4.jpg'>";
+}
+}
+</script>
+
+</body>
+</html>
