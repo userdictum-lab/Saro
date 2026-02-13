@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+
+html, body{height:100%;width:100%;overflow:hidden;}
+
+body{
+background:linear-gradient(135deg,#201828,#2a1d33,#3a223a);
+color:white;
+transition:1s;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* اسمها العائم */
+#herName{
+position:fixed;
+top:5%;
+left:50%;
+transform:translateX(-50%);
+font-size:6vw;
+font-weight:bold;
+letter-spacing:0.2em;
+z-index:9999;
+pointer-events:none;
+background:linear-gradient(90deg,#fff,#ffd6f1,#fff);
+-webkit-background-clip:text;
+color:transparent;
+animation:shine 3s linear infinite, glow 2s ease-in-out infinite alternate;
+text-align:center;
+}
+
+@keyframes shine{
+0%{background-position:-200px;}
+100%{background-position:200px;}
+}
+
+@keyframes glow{
+from{text-shadow:0 0 10px #ff9ed2;}
+to{text-shadow:0 0 25px #ffffff;}
+}
+
+.screen{
+display:none;
+height:100%;
+width:100%;
+justify-content:center;
+align-items:center;
+padding:20px;
+opacity:0;
+transition:.6s;
+flex-direction:column;
+}
+
+.screen.active{display:flex;opacity:1;}
+
+.card{
+background:rgba(255,255,255,0.06);
+padding:4vw;
+border-radius:4vw;
+text-align:center;
+backdrop-filter:blur(14px);
+width:90%;
+max-width:500px;
+box-shadow:0 0 5vw rgba(255,120,180,0.15);
+}
+
+button{
+padding:2vw 4vw;
+border:none;
+border-radius:2vw;
+background:linear-gradient(45deg,#ff7eb3,#ff4d8d);
+color:white;
+cursor:pointer;
+margin:1vw;
+transition:.3s;
+font-size:4vw;
+}
+button:hover{transform:scale(1.08);}
+
+input{
+width:100%;
+padding:3vw;
+border-radius:2vw;
+border:none;
+margin:3vw 0;
+background:#ffffff15;
+color:white;
+outline:none;
+font-size:4vw;
+}
+
+.fadeLine{opacity:0;transform:translateY(2vh);animation:fadeUp 1s forwards;font-size:4vw;}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+.giftGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:3vw;
+margin-top:3vw;
+}
+
+#giftImage{
+margin-top:3vw;
+width:100%;
+border-radius:2vw;
+box-shadow:0 0 5vw rgba(255,255,255,0.3);
+height:auto;
+max-height:50vh;
+object-fit:cover;
+}
+
+.scrollable{
+max-height:50vh;
+overflow-y:auto;
+text-align:left;
+padding-right:2vw;
+font-size:4vw;
+}
+</style>
+</head>
+<body>
+
+<!-- اسمها -->
+<div id="herName">Saro ❤️</div>
+
+<audio id="bgMusic" loop>
+<source src="Amjed.m4a">
+</audio>
+
+<audio id="voice">
+<source src="A.S.m4a">
+</audio>
+
+<!-- PASSWORD -->
+<section id="passwordScreen" class="screen active">
+<div class="card">
+<h2>This page is just for you 💖</h2>
+<input type="password" id="passwordInput" placeholder="Enter the special date">
+<button id="enterBtn">Enter</button>
+<p id="errorMessage"></p>
+</div>
+</section>
+
+<!-- QUESTION -->
+<section id="questionScreen" class="screen">
+<div class="card">
+<h2>Will you be my Valentine? ❤️</h2>
+<button id="yesBtn">Yes 💖</button>
+<button id="noBtn">No 😏</button>
+<p id="noText"></p>
+<p id="firstHint">Try your luck 😂</p>
+</div>
+</section>
+
+<!-- MESSAGE -->
+<section id="messageScreen" class="screen">
+<div class="card">
+<h2>Best decision you made ever 💖</h2>
+<div id="loveMessage" class="scrollable"></div>
+<button id="giftsBtn">Open Gifts 🎁</button>
+<button id="voiceBtn">Play my voice 🎙</button>
+</div>
+</section>
+
+<!-- GIFTS -->
+<section id="giftsScreen" class="screen">
+<div class="card">
+<h2>Choose your gift 💝</h2>
+
+<div class="giftGrid">
+<button onclick="gift(1)">gift no.1 🌹</button>
+<button onclick="gift(2)">gift no.2 🌌</button>
+<button onclick="gift(3)">gift no.3 🪷</button>
+<button onclick="gift(4)">gift no.4 😁</button>
+</div>
+
+<img id="giftImage">
+<p id="giftText"></p>
+
+</div>
+</section>
+
+<script>
+const passwordInput=document.getElementById("passwordInput");
+const enterBtn=document.getElementById("enterBtn");
+const errorMessage=document.getElementById("errorMessage");
+const bgMusic=document.getElementById("bgMusic");
+const voice=document.getElementById("voice");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const noText=document.getElementById("noText");
+const firstHint=document.getElementById("firstHint");
+const giftsBtn=document.getElementById("giftsBtn");
+const voiceBtn=document.getElementById("voiceBtn");
+
+function switchScreen(a,b){
+document.getElementById(a).classList.remove("active");
+setTimeout(()=>document.getElementById(b).classList.add("active"),300);
+}
+
+enterBtn.onclick=()=>{
+if(passwordInput.value==="2905"){
+switchScreen("passwordScreen","questionScreen");
+bgMusic.play().catch(()=>{}); // catch لتجنب مشاكل autoplay
+}else errorMessage.innerText="Wrong date 😌";
+};
+
+/* no button */
+let noCount=0;
+noBtn.onclick=()=>{
+noCount++;
+noBtn.style.position="absolute";
+noBtn.style.top=Math.random()*80+"%";
+noBtn.style.left=Math.random()*80+"%";
+let t=["Are you sure?","Think again","Still no?","Destiny says yes","Last chance"];
+firstHint.style.display="none";
+noText.innerText=t[noCount]||"You can't escape 😌";
+if(noCount>5) noBtn.style.display="none";
+};
+
+/* yes button */
+yesBtn.onclick=()=>{
+switchScreen("questionScreen","messageScreen");
+showText();
+};
+
+/* long message */
+function showText(){
+const lines=`Saro… 🤍
+Valentine’s Day isn’t just a celebration.
+It’s a reminder that love can be gentle… steady… real. 🌷
+And somehow, in the middle of everything,
+I found that kind of love in you.
+When I think about you,
+I don’t think about one single moment.
+I think about how you make the world quieter for me.
+Softer. Warmer. Safer. 🕊️
+You have this calm strength…
+this beautiful patience…
+this way of caring that feels effortless. 🌸
+I’ve seen you grow.
+I’ve seen you try.
+I’ve seen you push yourself even when it wasn’t easy.
+And every time…
+I admired you more. 🤍
+If love had a melody,
+it would sound like this piano playing now. 🎹
+If love had a light,
+it would glow the way your eyes do when you smile. ✨
+If love had a name…
+it would be yours.
+This page is small compared to what I feel.
+Because what I feel is not loud.
+It’s not dramatic.
+It’s quiet.
+It’s steady.
+It stays. 💞
+And on this Valentine’s Day…
+I don’t just want a moment.
+I want to keep choosing you.
+Again and again.
+So…
+Be my Valentine ❤️`.split("\n");
+
+const box=document.getElementById("loveMessage");
+box.innerHTML="";
+lines.forEach((l,i)=>{
+setTimeout(()=>{
+let p=document.createElement("p");
+p.className="fadeLine";
+p.innerText=l;
+box.appendChild(p);
+box.scrollTop=box.scrollHeight;
+},500*i);
+});
+}
+
+/* gifts */
+giftsBtn.onclick=()=>switchScreen("messageScreen","giftsScreen");
+
+function gift(n){
+const img=document.getElementById("giftImage");
+const text=document.getElementById("giftText");
+
+if(n===1){
+document.body.style.background="linear-gradient(135deg,#3a0000,#6b0000)";
+img.src="gift1.jpg";
+text.innerText="Roses for you 🌹";
+}
+if(n===2){
+document.body.style.background="linear-gradient(135deg,#000428,#004e92)";
+img.src="gift2.jpg";
+text.innerText="A sky full of wishes 🌌";
+}
+if(n===3){
+document.body.style.background="linear-gradient(135deg,#1a2a1a,#2e8b57)";
+img.src="gift3.jpg";
+text.innerText="Peaceful lotus 🪷";
+}
+if(n===4){
+document.body.style.background="linear-gradient(135deg,#2b1055,#7597de)";
+img.src="gift4.jpg";
+text.innerText="It's me 😁❤️";
+}
+}
+
+/* صوتك */
+voiceBtn.onclick=()=>{
+bgMusic.volume=0.2;
+voice.play().catch(()=>{}); 
+voice.onended=()=>bgMusic.volume=1;
+};
+
+</script>
+
+</body>
+</html>
